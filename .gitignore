@@ -1,13 +1,11 @@
 *~
 *.cfg
-*.iml
 target/
 graalvm/
 .settings/
 ./.project
 .factorypath
 .classpath
-.idea/
 .project
 /bin/
 /Coco.jar

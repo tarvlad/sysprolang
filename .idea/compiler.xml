@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for simplelanguage-parent" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/graalvm/truffle/truffle-dsl-processor/24.1.2/truffle-dsl-processor-24.1.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/graalvm/truffle/truffle-dsl-processor/24.1.2/truffle-dsl-processor-24.1.2.jar" />
+        </processorPath>
+        <module name="simplelanguage" />
+      </profile>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="sl-tck" />
+        <module name="launcher" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>
