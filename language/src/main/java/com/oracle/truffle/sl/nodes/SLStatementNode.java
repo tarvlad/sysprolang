@@ -70,6 +70,7 @@ public abstract class SLStatementNode extends SLScopedNode implements Instrument
     private int sourceLength;
 
     private boolean hasStatementTag;
+    private boolean hasNonStatementTag;
     private boolean hasRootTag;
 
     /*
@@ -149,7 +150,7 @@ public abstract class SLStatementNode extends SLScopedNode implements Instrument
 
     public boolean hasTag(Class<? extends Tag> tag) {
         if (tag == StandardTags.StatementTag.class) {
-            return hasStatementTag;
+            return !hasNonStatementTag && hasStatementTag;
         } else if (tag == StandardTags.RootTag.class || tag == StandardTags.RootBodyTag.class) {
             return hasRootTag;
         }
@@ -170,6 +171,13 @@ public abstract class SLStatementNode extends SLScopedNode implements Instrument
      */
     public final void addStatementTag() {
         hasStatementTag = true;
+    }
+
+    /**
+     * Marks this node as never having a {@link StandardTags.StatementTag}.
+     */
+    public final void addNonStatementTag() {
+        hasNonStatementTag = true;
     }
 
     /**

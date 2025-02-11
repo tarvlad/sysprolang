@@ -104,7 +104,6 @@ import com.oracle.truffle.sl.nodes.local.SLReadArgumentNode;
 import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNode;
 import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNode;
 import com.oracle.truffle.sl.parser.SLNodeFactory;
-import com.oracle.truffle.sl.parser.SimpleLanguageLexer;
 import com.oracle.truffle.sl.parser.SimpleLanguageParser;
 import com.oracle.truffle.sl.runtime.SLBigInteger;
 import com.oracle.truffle.sl.runtime.SLContext;

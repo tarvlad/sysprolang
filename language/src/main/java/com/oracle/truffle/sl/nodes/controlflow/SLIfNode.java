@@ -78,6 +78,7 @@ public final class SLIfNode extends SLStatementNode {
         this.conditionNode = SLUnboxNodeGen.create(conditionNode);
         this.thenPartNode = thenPartNode;
         this.elsePartNode = elsePartNode;
+        addNonStatementTag();
     }
 
     @Override

@@ -1,0 +1,17 @@
+object Factorial
+
+  def iterative(n: Int64): Int64
+    var result: Int64 = 1
+    var i: Int64 = 1
+    while i <= n
+      result = result * i
+      i = i + 1
+    return result
+
+  def recursive(n: Int64): Int64
+    if n > 1
+      return n * recursive(n - 1)
+    return 1
+
+  def main(): Int64
+    return iterative(6) + recursive(4)

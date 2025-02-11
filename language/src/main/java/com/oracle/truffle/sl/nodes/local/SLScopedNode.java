@@ -918,7 +918,7 @@ public abstract class SLScopedNode extends Node {
 
         @ExportMessage
         boolean hasSourceLocation() {
-            return writeNode.getNameNode().getSourceCharIndex() >= 0;
+            return writeNode.getNameNode().getCharIndex() >= 0;
         }
 
         @ExportMessage
@@ -927,8 +927,7 @@ public abstract class SLScopedNode extends Node {
             if (!hasSourceLocation()) {
                 throw UnsupportedMessageException.create();
             }
-            SLExpressionNode nameNode = writeNode.getNameNode();
-            return writeNode.getRootNode().getSourceSection().getSource().createSection(nameNode.getSourceCharIndex(), nameNode.getSourceLength());
+            return writeNode.getNameNode();
         }
     }
 }

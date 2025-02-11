@@ -54,6 +54,7 @@ public final class SLWhileNode extends SLStatementNode {
 
     public SLWhileNode(SLExpressionNode conditionNode, SLStatementNode bodyNode) {
         this.loopNode = Truffle.getRuntime().createLoopNode(new SLWhileRepeatingNode(conditionNode, bodyNode));
+        addNonStatementTag();
     }
 
     @Override

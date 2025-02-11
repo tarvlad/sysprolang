@@ -60,7 +60,7 @@ import com.oracle.truffle.sl.nodes.interop.NodeObjectDescriptor;
  */
 @NodeChild("valueNode")
 @NodeField(name = "slot", type = int.class)
-@NodeField(name = "nameNode", type = SLExpressionNode.class)
+@NodeField(name = "nameNode", type = SourceSection.class)
 @NodeField(name = "declaration", type = boolean.class)
 public abstract class SLWriteLocalVariableNode extends SLExpressionNode {
 
@@ -74,7 +74,7 @@ public abstract class SLWriteLocalVariableNode extends SLExpressionNode {
      * Returns the child node <code>nameNode</code>. The implementation of this method is created by
      * the Truffle DSL based on the {@link NodeChild} annotation on the class.
      */
-    protected abstract SLExpressionNode getNameNode();
+    protected abstract SourceSection getNameNode();
 
     public abstract boolean isDeclaration();
 
@@ -157,19 +157,7 @@ public abstract class SLWriteLocalVariableNode extends SLExpressionNode {
 
     @Override
     public Object getNodeObject() {
-        SLExpressionNode nameNode = getNameNode();
-        SourceSection nameSourceSection;
-        if (nameNode.getSourceCharIndex() == -1) {
-            nameSourceSection = null;
-        } else {
-            SourceSection rootSourceSection = getRootNode().getSourceSection();
-            if (rootSourceSection == null) {
-                nameSourceSection = null;
-            } else {
-                Source source = rootSourceSection.getSource();
-                nameSourceSection = source.createSection(nameNode.getSourceCharIndex(), nameNode.getSourceLength());
-            }
-        }
+        SourceSection nameSourceSection = getNameNode();
         return NodeObjectDescriptor.writeVariable((TruffleString) getRootNode().getFrameDescriptor().getSlotName(getSlot()), nameSourceSection);
     }
 }

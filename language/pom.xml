@@ -126,5 +126,12 @@
       <artifactId>antlr4-runtime</artifactId>
       <version>${antlr.version}</version>
     </dependency>
+    <dependency>
+      <groupId>ru.b-andrew</groupId>
+      <artifactId>syspro.tm.jvm</artifactId>
+      <version>2025.2.4</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/../libs/SysPro.TM.JVM.jar</systemPath>
+    </dependency>
   </dependencies>
 </project>
