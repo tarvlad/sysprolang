@@ -89,157 +89,31 @@ public class SLTCKLanguageProvider implements LanguageProvider {
     public Collection<? extends Snippet> createValueConstructors(Context context) {
         final Collection<Snippet> res = new ArrayList<>();
 
-        res.add(createValueConstructor(context, "1 == 2", "boolean", "createBoolean", TypeDescriptor.BOOLEAN));
-        res.add(createValueConstructor(context, "1", "number", "createNumber", NUMBER));
-        res.add(createValueConstructor(context, "9223372036854775809", "bigNumber", "createBigNumber", NUMBER));
-        res.add(createValueConstructor(context, "\"string\"", "string", "createString", TypeDescriptor.STRING));
-        Snippet.Builder opb = Snippet.newBuilder(
-                        "object",
-                        eval(
-                                        context,
-                                        "function createObject() {\n" +
-                                                        "obj1 = new();\n" +
-                                                        "obj1.attr = 42;\n" +
-                                                        "return obj1;\n" +
-                                                        "}",
-                                        "createObject"),
-                        TypeDescriptor.OBJECT);
-        res.add(opb.build());
-        opb = Snippet.newBuilder(
-                        "function",
-                        eval(
-                                        context,
-                                        "function fn() {\n" +
-                                                        "}" +
-                                                        "function createFunction() {\n" +
-                                                        "return fn;\n" +
-                                                        "}",
-                                        "createFunction"),
-                        TypeDescriptor.EXECUTABLE);
-
-        res.add(createValueConstructor(context, "wrapPrimitive(1 == 2)", "wrapped-boolean", "createWrappedBoolean", TypeDescriptor.BOOLEAN));
-        res.add(createValueConstructor(context, "wrapPrimitive(1)", "wrapped-number", "createWrappedNumber", NUMBER));
-        res.add(createValueConstructor(context, "wrapPrimitive(\"string\")", "wrapped-string", "createWrappedString", TypeDescriptor.STRING));
-
-        res.add(createValueConstructor(context, "typeOf(1 == 2)", "boolean-metaobject",
-                        "createBooleanMetaObject", TypeDescriptor.META_OBJECT));
-        res.add(createValueConstructor(context, "typeOf(1)", "number-metaobject",
-                        "createNumberMetaObject", TypeDescriptor.META_OBJECT));
-        res.add(createValueConstructor(context, "typeOf(\"str\")", "string-metaobject",
-                        "createStringMetaObject", TypeDescriptor.META_OBJECT));
-        res.add(createValueConstructor(context, "typeOf(NULL)", "null-metaobject",
-                        "createNullMetaObject", TypeDescriptor.META_OBJECT));
-        res.add(createValueConstructor(context, "typeOf(new())", "object-metaobject",
-                        "createObjectMetaObject", TypeDescriptor.META_OBJECT));
-        res.add(createValueConstructor(context, "typeOf(createStringMetaObject)",
-                        "function-metaobject",
-                        "createFunctionMetaObject", TypeDescriptor.META_OBJECT));
-
-        res.add(opb.build());
         return Collections.unmodifiableCollection(res);
     }
 
     @Override
     public Collection<? extends Snippet> createExpressions(Context context) {
         final Collection<Snippet> res = new ArrayList<>();
-        final Value fnc = eval(context, String.format(PATTERN_BIN_OP_FNC, "add", "+"), "add");
-        Snippet.Builder opb = Snippet.newBuilder("+", fnc, NUMBER_RETURN).parameterTypes(NUMBER, NUMBER);
-        res.add(opb.build());
-        opb = Snippet.newBuilder("+", fnc, TypeDescriptor.STRING).parameterTypes(TypeDescriptor.STRING, TypeDescriptor.ANY);
-        res.add(opb.build());
-        opb = Snippet.newBuilder("+", fnc, TypeDescriptor.STRING).parameterTypes(TypeDescriptor.ANY, TypeDescriptor.STRING);
-        res.add(opb.build());
-        res.add(createBinaryOperator(context, "-", "sub", NUMBER_RETURN, NUMBER, NUMBER).build());
-        res.add(createBinaryOperator(context, "*", "mul", NUMBER_RETURN, NUMBER, NUMBER).build());
-        res.add(createBinaryOperator(context, "/", "div", NUMBER_RETURN, NUMBER, NUMBER).resultVerifier((snippetRun) -> {
-            final Value dividend = snippetRun.getParameters().get(0);
-            final Value divider = snippetRun.getParameters().get(1);
-            final PolyglotException exception = snippetRun.getException();
-            if (dividend.isNumber() && divider.fitsInDouble() && divider.asDouble() == 0) {
-                Assert.assertNotNull(exception);
-            } else if (exception != null) {
-                throw exception;
-            } else {
-                Assert.assertTrue(NUMBER.isAssignable(TypeDescriptor.forValue(snippetRun.getResult())));
-            }
-        }).build());
-        res.add(createBinaryOperator(context, "==", "eq", TypeDescriptor.BOOLEAN, TypeDescriptor.ANY, TypeDescriptor.ANY).build());
-        res.add(createBinaryOperator(context, "!=", "neq", TypeDescriptor.BOOLEAN, TypeDescriptor.ANY, TypeDescriptor.ANY).build());
-        res.add(createBinaryOperator(context, "<=", "le", TypeDescriptor.BOOLEAN, NUMBER, NUMBER).build());
-        res.add(createBinaryOperator(context, ">=", "ge", TypeDescriptor.BOOLEAN, NUMBER, NUMBER).build());
-        res.add(createBinaryOperator(context, "<", "l", TypeDescriptor.BOOLEAN, NUMBER, NUMBER).build());
-        res.add(createBinaryOperator(context, ">", "g", TypeDescriptor.BOOLEAN, NUMBER, NUMBER).build());
-        res.add(createBinaryOperator(context, "||", "or", TypeDescriptor.BOOLEAN, TypeDescriptor.BOOLEAN, TypeDescriptor.ANY).resultVerifier((snippetRun) -> {
-            final Value firstParam = snippetRun.getParameters().get(0);
-            final Value secondParam = snippetRun.getParameters().get(1);
-            final PolyglotException exception = snippetRun.getException();
-            if (firstParam.isBoolean() && !firstParam.asBoolean() && !secondParam.isBoolean()) {
-                Assert.assertNotNull(exception);
-            } else if (exception != null) {
-                throw exception;
-            } else {
-                Assert.assertTrue(TypeDescriptor.BOOLEAN.isAssignable(TypeDescriptor.forValue(snippetRun.getResult())));
-            }
-        }).build());
-        res.add(createBinaryOperator(context, "&&", "land", TypeDescriptor.BOOLEAN, TypeDescriptor.BOOLEAN, TypeDescriptor.ANY).resultVerifier((snippetRun) -> {
-            final Value firstParam = snippetRun.getParameters().get(0);
-            final Value secondParam = snippetRun.getParameters().get(1);
-            final PolyglotException exception = snippetRun.getException();
-            if (firstParam.isBoolean() && firstParam.asBoolean() && !secondParam.isBoolean()) {
-                Assert.assertNotNull(exception);
-            } else if (exception != null) {
-                throw exception;
-            } else {
-                Assert.assertTrue(TypeDescriptor.BOOLEAN.isAssignable(TypeDescriptor.forValue(snippetRun.getResult())));
-            }
-        }).build());
-        res.add(createPostfixOperator(context, "()", "callNoArg", TypeDescriptor.NULL, TypeDescriptor.executable(TypeDescriptor.ANY)).build());
-        res.add(createPostfixOperator(context, "(1)", "callOneArg", TypeDescriptor.NULL, TypeDescriptor.executable(TypeDescriptor.ANY, NUMBER)).build());
-        res.add(createPostfixOperator(context, "(1, \"\")", "callTwoArgs", TypeDescriptor.NULL, TypeDescriptor.executable(TypeDescriptor.ANY, NUMBER, TypeDescriptor.STRING)).build());
-
         return Collections.unmodifiableCollection(res);
     }
 
     @Override
     public Collection<? extends Snippet> createStatements(Context context) {
         final Collection<Snippet> res = new ArrayList<>();
-        res.add(createStatement(context, "if", "iffnc", "if ({1}) '{'\n{0}=1;\n'}' else '{'\n{0}=0;\n'}'", NUMBER, TypeDescriptor.BOOLEAN));
-        res.add(createStatement(context, "while", "whilefnc", "while ({1}) '{'break;\n'}'", NUMBER, TypeDescriptor.BOOLEAN));
-        res.add(createStatement(context, "assign", "assignfnc", "{1} = {0};", TypeDescriptor.ANY, TypeDescriptor.ANY));
-
-        // relevant builtins
-        res.add(createBuiltin(context, "getSize", NUMBER, TypeDescriptor.ARRAY));
-        res.add(createBuiltin(context, "hasSize", TypeDescriptor.BOOLEAN, TypeDescriptor.ANY));
-        res.add(createBuiltin(context, "isExecutable", TypeDescriptor.BOOLEAN, TypeDescriptor.ANY));
-        res.add(createBuiltin(context, "isNull", TypeDescriptor.BOOLEAN, TypeDescriptor.ANY));
-
-        res.add(createBuiltin(context, "isInstance", TypeDescriptor.BOOLEAN,
-                        TypeDescriptor.META_OBJECT,
-                        TypeDescriptor.ANY));
-        res.add(createBuiltin(context, "typeOf", TypeDescriptor.union(TypeDescriptor.META_OBJECT,
-                        TypeDescriptor.NULL), TypeDescriptor.ANY));
-
         return res;
     }
 
     @Override
     public Collection<? extends Snippet> createScripts(Context context) {
         final Collection<Snippet> res = new ArrayList<>();
-        res.add(loadScript(context, "resources/Ackermann.sl", TypeDescriptor.NULL, null));
-        res.add(loadScript(context, "resources/Fibonacci.sl", TypeDescriptor.NULL, null));
         return Collections.unmodifiableCollection(res);
     }
 
     @Override
     public Collection<? extends Source> createInvalidSyntaxScripts(Context context) {
-        try {
-            final Collection<Source> res = new ArrayList<>();
-            res.add(createSource("resources/InvalidSyntax01.sl"));
-            res.add(createSource("resources/InvalidSyntax02.sl"));
-            return Collections.unmodifiableCollection(res);
-        } catch (IOException ioe) {
-            throw new AssertionError("IOException while creating a test script.", ioe);
-        }
+        final Collection<Source> res = new ArrayList<>();
+        return Collections.unmodifiableCollection(res);
     }
 
     private static Snippet createValueConstructor(

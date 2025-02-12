@@ -55,7 +55,7 @@
         <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.8.1</version>
         <executions>
           <execution>
             <id>copy-dependencies</id>
@@ -73,7 +73,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.1</version>
         <executions>
           <execution>
             <id>copy-resources</id>
@@ -118,8 +118,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>
-                                        ${env.JAVA_HOME}/bin/native-image</executable>
+                                    <executable>${env.JAVA_HOME}/bin/native-image.cmd</executable>
                                     <commandlineArgs>
                                         -p %classpath
                                         -H:+ReportExceptionStackTraces
@@ -140,6 +139,13 @@
             <groupId>com.oracle</groupId>
             <artifactId>launcher</artifactId>
             <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.b-andrew</groupId>
+            <artifactId>syspro.tm.jvm</artifactId>
+            <version>2025.2.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../libs/SysPro.TM.JVM.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

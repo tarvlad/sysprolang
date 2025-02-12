@@ -47,9 +47,6 @@
     <version>${graalvm.version}</version>
   </parent>
   <artifactId>simplelanguage</artifactId>
-  <properties>
-    <antlr.version>4.12.0</antlr.version>
-  </properties>
   <build> 
     <plugins>
       <plugin>
@@ -63,7 +60,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.5.2</version>
         <configuration>
            <argLine>
                --add-exports=java.base/jdk.internal.module=truffle.tck
@@ -75,7 +72,7 @@
       <plugins>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
+          <version>3.13.0</version>
           <configuration>
             <source>17</source>
             <target>17</target>
@@ -120,11 +117,6 @@
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <version>${antlr.version}</version>
     </dependency>
     <dependency>
       <groupId>ru.b-andrew</groupId>
